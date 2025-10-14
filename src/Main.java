@@ -1,5 +1,7 @@
 
 
+import java.nio.channels.ScatteringByteChannel;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 // Главный класс программы
@@ -23,11 +25,11 @@ public class Main {
         // Велосипед c 18 скоростьями
         Bicycle bicycle18 = new Bicycle("Stesl", 50, 1, 18);
 
-        // Помещаем все ТС в массивы
+        // Помещаем все ТС в массив
         Transportprops[] transportsALL = {car, airplaneGazoline, ship, bicycle18};
 
-            System.out.println("ТРАНСПОРТНЫЕ СРЕДСТВА");
-            System.out.println("----------------------------");
+        System.out.println("ТРАНСПОРТНЫЕ СРЕДСТВА");
+        System.out.println("----------------------------");
 
         // Основной цикл программы
         boolean running = true;
@@ -41,51 +43,57 @@ public class Main {
             System.out.println("`0` - Выйти из программы");
             System.out.print(" Введите значение: ");
 
-            int input = scanner.nextInt();
+            try {
+               int input = scanner.nextInt();
 
-            switch (input) {
-                case 0:
+               switch (input) {
+                    case 0:
                     running = false;
                     System.out.println("Программа завершена");
                     break;
 
-                case 1:
+                    case 1:
                     // Показываем информацию о всех ТС
                     System.out.println("\n Информация о всех транспортных средствах: ");
                     for (int i = 0; i < transportsALL.length; i++) {
                         System.out.println("\n" + (i + 1) + ". " + transportsALL[i].getClass().getSimpleName());
-                        transportsALL[i].displayInfo();
-                    }
-                    break;
+                        transportsALL[i].displayInfo();}
+                        break;
 
-                case 2:
+                    case 2:
                     System.out.println("\n Управление автомобилем: `" + car.name + "`");
                     adminTransport(car, scanner);
                     break;
 
-                case 3:
+                    case 3:
                     // manageTransport(airplane, scanner);
                     System.out.println(" \n Управление кораблем: `" + ship.name + "`");
                     adminTransport(ship, scanner);
                     break;
 
-                case 4:
+                    case 4:
                     //  manageTransport(ship, scanner);
                     System.out.println(" \n Управление самолетом: `" + airplaneGazoline.name + "`");
                     adminTransport(airplaneGazoline, scanner);
                     break;
 
-                case 5:
+                    case 5:
                     System.out.println("\n Управление велосипедом: `" + bicycle18.name + "`");
                     adminTransport(bicycle18, scanner);
                     break;
 
-                default:
-                    System.out.println("Ошибка! Введите число от 0 до 5 \n");
+                    default:
+                    System.out.println("ОШИБКА! Введите число от 0 до 5 \n");
+               }
+            } catch (InputMismatchException e) {
+                     System.out.println("ОШИБКА! Введите целое число от 0 до 5");
+                     // Очистка буфера сканера
+                     scanner.nextLine();
             }
         }
         scanner.close();
     }
+
     // Метод для управления ТС
     private static void adminTransport(Transportprops transport, Scanner scanner) {
 
@@ -95,45 +103,48 @@ public class Main {
             System.out.println("1. Показать информацию");
             System.out.println("2. Двигаться");
             System.out.println("3. Остановиться");
-
-            // Проверяем, можно ли заправлять этот транспорт
-            if (transport instanceof Refuel) {
-                System.out.println("4. Заправить");
-            }
+            System.out.println("4. Заправить");
             System.out.println("0. Вернуться в главное меню");
             System.out.print("Выберите действие: ");
 
-            int action = scanner.nextInt();
+            try {
+                int action = scanner.nextInt();
 
-            switch (action) {
-                case 0:
-                    managing = false;
-                    break;
+                switch (action) {
+                    case 0:
+                        managing = false;
+                        break;
 
-                case 1:
-                    transport.displayInfo();
-                    break;
+                    case 1:
+                        transport.displayInfo();
+                        break;
 
-                case 2:
-                    transport.move();
-                    break;
+                    case 2:
+                        transport.move();
+                        break;
 
-                case 3:
-                    transport.stop();
-                    break;
+                    case 3:
+                        transport.stop();
+                        break;
 
-                case 4:
-                    if (transport instanceof Refuel) {
-                        Refuel refuelable = (Refuel) transport;
-                        refuelable.refuel(100);
-                        System.out.println("Транспорт успешно заправлен!");
-                    } else {
-                        System.out.println("Этот транспорт не требует заправки");
-                    }
-                    break;
+                    case 4:
+                        if (transport instanceof Refuel) {
+                            Refuel refuelable = (Refuel) transport;
+                            refuelable.refuel(100);
+                            System.out.println("Транспорт успешно заправлен!");
+                        } else {
+                            System.out.println("Этот транспорт не требует заправки");
+                        }
+                        break;
 
-                default:
-                    System.out.println("Ошибка! Введите число от 0 до 4 ");
+                    default:
+                        System.out.println("ОШИБКА! Введите число от 0 до 4 ");
+                }
+            }
+            catch (InputMismatchException e) {
+                System.out.println("ОШИБКА! Введите целое число от 0 до 4 ");
+                // Очистка буфера сканера
+                scanner.nextLine();
             }
         }
     }
